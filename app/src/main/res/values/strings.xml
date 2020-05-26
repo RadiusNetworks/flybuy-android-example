@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">FlyBuy Example</string>
+    <string name="default_notification_channel_id" translatable="false">Order Updates</string>
+    <string name="default_notification_channel_name">Order Updates</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="youre_here">You\'re here</string>
+    <string name="calculating">Calculating</string>
+    <string name="no_location">No Location Shared</string>
+    <string name="eta_format">h:mm a</string>
+    <string name="overdue">Overdue (%1$s)</string>
+    <string name="less_than_a_minute">Less than a minute (%1$s)</string>
+    <string name="one_minute">1 minute (%1$s)</string>
+    <string name="eta_minutes">%1$d minutes (%2$s)</string>
+    <string name="asap">ASAP</string>
+
+    <string name="terms_header">Curbside works best with background location on.</string>
+    <string name="terms_location">Letting us temporarily use your location while the app is in the background helps us respond quickly to your arrival.</string>
+    <string name="terms_ok">Sounds Good</string>
+    <string name="terms_check_age">I am of legal age to consent for my country of residence</string>
+    <string name="terms_agree">I agree to the terms of service and privacy policy</string>
+
+
+    <string name="omw_picking_up_from">PICKING UP FROM</string>
+    <string name="omw_pickup_time">PICK UP TIME</string>
+    <string name="omw_your_information">YOUR INFORMATION</string>
+    <string name="omw_on_my_way">On My Way</string>
+    <string name="omw_name">Name</string>
+    <string name="omw_phone">Phone</string>
+    <string name="omw_vehicle_type">Vehicle Make/Model</string>
+    <string name="omw_vehicle_color">Vehicle Color</string>
+    <string name="omw_license_plate">License Plate</string>
+
+    <string name="journey_see_you_soon">See You Soon!</string>
+    <string name="journey_order_placed">Order Placed</string>
+    <string name="journey_on_your_way">On your way</string>
+    <string name="journey_arrived">You\'ve arrived</string>
+    <string name="journey_completed">You\'re done</string>
+    <string name="journey_instructions">Head to the store and we\'ll have your order ready for pickup as soon as you get here!</string>
+    <string name="journey_eta_in">Your ETA is in:</string>
+    <string name="journey_im_done">I\'m done</string>
+    <string name="journey_already_here">Already here?</string>
+
+    <string name="completed_thank_you">Thank you for your order.  We hope to see you again soon!</string>
+    <string name="completed_how_was_experience">How was your pickup experience?</string>
+    <string name="completed_comments">Comments</string>
+    <string name="completed_feedback">Send Feedback</string>
+</resources>

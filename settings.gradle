@@ -1,0 +1,2 @@
+rootProject.name='flybuy_android_example'
+include ':app'
