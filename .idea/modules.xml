@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="flybuy_android_example/app" />
-      <module fileurl="file://$PROJECT_DIR$/flybuy_android_example.iml" filepath="$PROJECT_DIR$/flybuy_android_example.iml" group="flybuy_android_example" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flybuy-android-example-flybuy_android_example.iml" filepath="$PROJECT_DIR$/.idea/modules/flybuy-android-example-flybuy_android_example.iml" group="flybuy_android_example" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/flybuy_android_example-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/flybuy_android_example-app.iml" group="flybuy_android_example/app" />
     </modules>
   </component>
 </project>
