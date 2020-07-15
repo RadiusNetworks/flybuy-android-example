@@ -2,6 +2,9 @@
     <string name="app_name">FlyBuy Example</string>
     <string name="default_notification_channel_id" translatable="false">Order Updates</string>
     <string name="default_notification_channel_name">Order Updates</string>
+    <string name="notif_flybuy_order_in_progress_title">FlyBuy Example Order in Progress</string>
+    <string name="notif_flybuy_order_in_progress_content">We\'ll let the example merchant know when you arrive.</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
