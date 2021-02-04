@@ -10,7 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.radiusnetworks.flybuy.sdk.FlyBuy
+import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import kotlinx.android.synthetic.main.activity_on_my_way.*
 import org.threeten.bp.ZoneId
@@ -27,7 +27,7 @@ class OnMyWayActivity : AppCompatActivity() {
     }
 
     private fun updateFlyBuyCustomer() {
-        FlyBuy.customer.update(readFlyBuyCustomer()) { _, sdkError ->
+        FlyBuyCore.customer.update(readFlyBuyCustomer()) { _, sdkError ->
             sdkError?.let {
                 app?.handleFlyBuyError(it)
             }
@@ -44,7 +44,7 @@ class OnMyWayActivity : AppCompatActivity() {
     }
 
     private fun displayFlyBuyCustomer() {
-        FlyBuy.customer.current?.let {
+        FlyBuyCore.customer.current?.let {
             runOnUiThread {
                 customer_name.setText(it.name)
                 customer_phone.setText(it.phone)

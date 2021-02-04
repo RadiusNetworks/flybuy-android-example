@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.radiusnetworks.example.flybuy.R
-import com.radiusnetworks.flybuy.sdk.FlyBuy
+import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 
 
 class FlyBuyFirebaseService : FirebaseMessagingService() {
@@ -38,7 +38,7 @@ class FlyBuyFirebaseService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         Log.d("Notification", "Refreshed token: $token")
-        FlyBuy.onNewPushToken(token)
+        FlyBuyCore.onNewPushToken(token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -73,7 +73,7 @@ class FlyBuyFirebaseService : FirebaseMessagingService() {
                 notificationManager.notify(notification.tag, NOTIFICATION_ID, notif)
 
             }
-            FlyBuy.onMessageReceived(it.data, null)
+            FlyBuyCore.onMessageReceived(it.data, null)
         }
     }
 

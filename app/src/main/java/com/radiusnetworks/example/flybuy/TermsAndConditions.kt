@@ -1,14 +1,13 @@
 package com.radiusnetworks.example.flybuy
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.iid.FirebaseInstanceId
-import com.radiusnetworks.flybuy.sdk.FlyBuy
+import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import kotlinx.android.synthetic.main.terms_and_conditions.*
 
@@ -33,7 +32,7 @@ class TermsAndConditions : AppCompatActivity() {
             licensePlate = "OUTATIME",
             phone = "555-555-5555"
         )
-        FlyBuy.customer.create(
+        FlyBuyCore.customer.create(
             customerInfo,
             termsOfService = true,
             ageVerification = true
