@@ -85,29 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun redeemOrderClick(v: View?) {
-        FlyBuyCore.orders.create(
-            siteID = 2945,
-            partnerIdentifier = "125XXX",
-            customerInfo = CustomerInfo(
-                name = "Oleksandr Tsvietkov",
-                phone = "(311) 111-1111",
-                carType = "Eee",
-                carColor = "Cdcc",
-                licensePlate = ""
-                /*name = FlyBuy.customer.current!!.name,
-                carType = FlyBuy.customer.current?.carType.toString(),
-                carColor = FlyBuy.customer.current?.carColor.toString(),
-                licensePlate = FlyBuy.customer.current?.licensePlate.toString()*/
-            ),
-            pickupWindow = null,
-            pickupType = "curbside") { order, sdkError ->
-            sdkError?.let {
-                app?.handleFlyBuyError(it)
-            } ?: run {
-
-            }
-        }
-        //fetchOrder(redemption_code.text.toString())
+        fetchOrder(redemption_code.text.toString())
     }
 
 }
