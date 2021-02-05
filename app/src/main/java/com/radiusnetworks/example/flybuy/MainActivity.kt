@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
-import com.radiusnetworks.flybuy.sdk.FlyBuy
+import com.radiusnetworks.flybuy.sdk.FlyBuyCore
+import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_on_my_way.*
 
 class MainActivity : AppCompatActivity() {
     private var app: ExampleApplication? = null
@@ -27,9 +29,9 @@ class MainActivity : AppCompatActivity() {
                 fetchOrder(it)
             }
         } ?: run {
-            FlyBuy.orders.fetch()
+            FlyBuyCore.orders.fetch()
             var activity: Class<AppCompatActivity> = OnMyWayActivity::class.java as Class<AppCompatActivity>
-            var openOrders = FlyBuy.orders.open
+            var openOrders = FlyBuyCore.orders.open
             // if this customer has open orders, choose the first one and return to the guest journey.
             if (openOrders.isNotEmpty()) {
                 app?.activeOrder = openOrders[0]
@@ -59,20 +61,20 @@ class MainActivity : AppCompatActivity() {
                 }
                 // Get new Instance ID token
                 task.result?.token?.let {
-                    FlyBuy.onNewPushToken(it)
+                    FlyBuyCore.onNewPushToken(it)
                 }
             })
     }
 
 
     private fun fetchOrder(code: String) {
-        FlyBuy.orders.fetch(code) { order, sdkError ->
+        FlyBuyCore.orders.fetch(code) { order, sdkError ->
             sdkError?.let {
                 app?.handleFlyBuyError(it)
             } ?: run {
                 app?.activeOrder = order
                 // does FlyBuy customer exist?
-                FlyBuy.customer.current?.let {
+                FlyBuyCore.customer.current?.let {
                     startActivity(Intent(this, OnMyWayActivity::class.java))
                 } ?: run {
                     // if FlyBuy customer does not exist, show Terms and Conditions before creating user

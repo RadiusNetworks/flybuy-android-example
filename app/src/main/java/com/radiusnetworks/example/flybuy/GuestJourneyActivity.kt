@@ -12,11 +12,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.radiusnetworks.flybuy.sdk.FlyBuy
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import com.radiusnetworks.flybuy.sdk.data.order.OrderState
 import com.radiusnetworks.flybuy.sdk.data.room.domain.Order
+import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import kotlinx.android.synthetic.main.activity_guest_journey.*
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -38,7 +38,7 @@ class GuestJourneyActivity : AppCompatActivity() {
             orderProgress(it)
         }
         val order: LiveData<Order> = app?.activeOrder?.let {
-            FlyBuy.orders.getOrder(it.id)
+            FlyBuyCore.orders.getOrder(it.id)
         } ?: run {
             MutableLiveData<Order>()
         }
@@ -51,7 +51,7 @@ class GuestJourneyActivity : AppCompatActivity() {
 
     private fun orderProgress(order: Order) {
         // OrderStates of COMPLETED and CANCELLED take priority over CustomerState
-        when (order.orderState) {
+        when (order.state) {
             OrderState.COMPLETED -> showOrderCompleted()
             OrderState.CANCELLED -> startActivity(Intent(this, MainActivity::class.java))
             OrderState.GONE -> startActivity(Intent(this, MainActivity::class.java))
@@ -125,14 +125,14 @@ class GuestJourneyActivity : AppCompatActivity() {
     }
 
     private fun claimOrder(order: Order) {
-        FlyBuy.customer.current?.let { customer ->
+        FlyBuyCore.customer.current?.let { customer ->
             val customerInfo = intent?.let {
                 CustomerInfo(
-                    name = it.getStringExtra("CustomerName"),
-                    phone = it.getStringExtra("CustomerPhone"),
-                    carType = it.getStringExtra("CustomerCarType"),
-                    carColor = it.getStringExtra("CustomerCarColor"),
-                    licensePlate = it.getStringExtra("CustomerLicensePlate")
+                    name = it.getStringExtra("CustomerName") ?: "",
+                    phone = it.getStringExtra("CustomerPhone") ?: "",
+                    carType = it.getStringExtra("CustomerCarType") ?: "",
+                    carColor = it.getStringExtra("CustomerCarColor") ?: "",
+                    licensePlate = it.getStringExtra("CustomerLicensePlate") ?: ""
                 )
             } ?: run {
                 CustomerInfo(
@@ -144,13 +144,13 @@ class GuestJourneyActivity : AppCompatActivity() {
                 )
             }
 
-            FlyBuy.orders.claim(order.redemptionCode.toString(), customerInfo) { _, sdkError ->
+            FlyBuyCore.orders.claim(order.redemptionCode.toString(), customerInfo) { _, sdkError ->
                 sdkError?.let {
                     app?.handleFlyBuyError(it)
                 } ?: run {
                     // if location permissions denied, send an EN_ROUTE update
                     if (!checkLocationPermissions()) {
-                        FlyBuy.orders.event(order.id, CustomerState.EN_ROUTE) { _, sdkError ->
+                        FlyBuyCore.orders.updateCustomerState(order.id, CustomerState.EN_ROUTE) { _, sdkError ->
                             sdkError?.let {
                                 app?.handleFlyBuyError(it)
                             }
@@ -166,8 +166,8 @@ class GuestJourneyActivity : AppCompatActivity() {
     }
 
     fun imHereClick(v: View) {
-        app?.activeOrder?.let {
-            FlyBuy.orders.event(it.id, CustomerState.WAITING) { order, sdkError ->
+        app?.activeOrder?.let { it ->
+            FlyBuyCore.orders.updateCustomerState(it.id, CustomerState.WAITING) { order, sdkError ->
                 sdkError?.let {
                     app?.handleFlyBuyError(it)
                 } ?: run {
@@ -183,7 +183,7 @@ class GuestJourneyActivity : AppCompatActivity() {
 
     fun imDoneClick(v: View) {
         app?.activeOrder?.let {
-            FlyBuy.orders.event(it.id, CustomerState.COMPLETED) { order, sdkError ->
+            FlyBuyCore.orders.updateCustomerState(it.id, CustomerState.COMPLETED) { order, sdkError ->
                 sdkError?.let {
                     app?.handleFlyBuyError(it)
                 } ?: run {
