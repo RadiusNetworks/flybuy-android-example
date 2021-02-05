@@ -128,11 +128,11 @@ class GuestJourneyActivity : AppCompatActivity() {
         FlyBuyCore.customer.current?.let { customer ->
             val customerInfo = intent?.let {
                 CustomerInfo(
-                    name = it.getStringExtra("CustomerName")!!,
-                    phone = it.getStringExtra("CustomerPhone")!!,
-                    carType = it.getStringExtra("CustomerCarType")!!,
-                    carColor = it.getStringExtra("CustomerCarColor")!!,
-                    licensePlate = it.getStringExtra("CustomerLicensePlate")!!
+                    name = it.getStringExtra("CustomerName") ?: "",
+                    phone = it.getStringExtra("CustomerPhone") ?: "",
+                    carType = it.getStringExtra("CustomerCarType") ?: "",
+                    carColor = it.getStringExtra("CustomerCarColor") ?: "",
+                    licensePlate = it.getStringExtra("CustomerLicensePlate") ?: ""
                 )
             } ?: run {
                 CustomerInfo(
