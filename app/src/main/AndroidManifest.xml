@@ -38,10 +38,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="demo-flybuy.radiusnetworks.com"
-                    android:scheme="http" />
+                <data android:scheme="http" />
                 <data android:scheme="https" />
+                <data android:host="demo-flybuy.radiusnetworks.com" />
             </intent-filter>
         </activity>
         <activity

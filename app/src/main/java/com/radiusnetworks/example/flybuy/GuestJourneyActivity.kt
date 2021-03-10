@@ -17,6 +17,7 @@ import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import com.radiusnetworks.flybuy.sdk.data.order.OrderState
 import com.radiusnetworks.flybuy.sdk.data.room.domain.Order
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
+import com.radiusnetworks.flybuy.sdk.data.room.domain.open
 import kotlinx.android.synthetic.main.activity_guest_journey.*
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -50,42 +51,40 @@ class GuestJourneyActivity : AppCompatActivity() {
     }
 
     private fun orderProgress(order: Order) {
-        // OrderStates of COMPLETED and CANCELLED take priority over CustomerState
         when (order.state) {
-            OrderState.COMPLETED -> showOrderCompleted()
             OrderState.CANCELLED -> startActivity(Intent(this, MainActivity::class.java))
             OrderState.GONE -> startActivity(Intent(this, MainActivity::class.java))
             else -> {
-                when (order.customerState) {
-                    CustomerState.CREATED -> {
-                        progressBar.progress = 25
-                        eta.text = formatETA(order.etaAt)
-                        claimOrder(order)
-                    }
-                    CustomerState.EN_ROUTE -> {
-                        progressBar.progress = 33
-                        eta.text = formatETA(order.etaAt)
-                    }
-                    CustomerState.NEARBY -> {
-                        progressBar.progress = 50
-                        eta.text = formatETA(order.etaAt)
-                    }
-                    CustomerState.ARRIVED -> {
-                        progressBar.progress = 67
-                        textView.text = getString(R.string.youre_here)
-                        eta.text = order.site.instructions
-                    }
-                    CustomerState.WAITING -> {
-                        progressBar.progress = 75
-                        // Once a customer is waiting, hide the I'm here button and show I'm done
-                        textView.text = getString(R.string.youre_here)
-                        eta.text = order.site.instructions
-                        imDoneButton.visibility = View.VISIBLE
-                        imHereButton.visibility = View.INVISIBLE
-                    }
-                    CustomerState.COMPLETED -> {
-                        progressBar.progress = 100
-                        showOrderCompleted()
+                if (!order.open()) {
+                    showOrderCompleted()
+                } else {
+                    when (order.customerState) {
+                        CustomerState.CREATED -> {
+                            progressBar.progress = 25
+                            eta.text = formatETA(order.etaAt)
+                            claimOrder(order)
+                        }
+                        CustomerState.EN_ROUTE -> {
+                            progressBar.progress = 33
+                            eta.text = formatETA(order.etaAt)
+                        }
+                        CustomerState.NEARBY -> {
+                            progressBar.progress = 50
+                            eta.text = formatETA(order.etaAt)
+                        }
+                        CustomerState.ARRIVED -> {
+                            progressBar.progress = 67
+                            textView.text = getString(R.string.youre_here)
+                            eta.text = order.site.instructions
+                        }
+                        CustomerState.WAITING -> {
+                            progressBar.progress = 75
+                            // Once a customer is waiting, hide the I'm here button and show I'm done
+                            textView.text = getString(R.string.youre_here)
+                            eta.text = order.site.instructions
+                            imDoneButton.visibility = View.VISIBLE
+                            imHereButton.visibility = View.INVISIBLE
+                        }
                     }
                 }
             }
