@@ -51,42 +51,39 @@ class GuestJourneyActivity : AppCompatActivity() {
     }
 
     private fun orderProgress(order: Order) {
-        when (order.state) {
-            OrderState.CANCELLED -> startActivity(Intent(this, MainActivity::class.java))
-            OrderState.GONE -> startActivity(Intent(this, MainActivity::class.java))
+        when {
+            order.state == OrderState.CANCELLED -> {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+            !(order.open()) -> {
+                showOrderCompleted()
+            }
+            order?.customerId == null -> {
+                progressBar.progress = 25
+                eta.text = formatETA(order.etaAt)
+                claimOrder(order)
+            }
+            order.customerState == CustomerState.ARRIVED -> {
+                progressBar.progress = 67
+                textView.text = getString(R.string.youre_here)
+                eta.text = order.site.instructions
+            }
+            order.customerState == CustomerState.WAITING -> {
+                progressBar.progress = 75
+                // Once a customer is waiting, hide the I'm here button and show I'm done
+                textView.text = getString(R.string.youre_here)
+                eta.text = order.site.instructions
+                imDoneButton.visibility = View.VISIBLE
+                imHereButton.visibility = View.INVISIBLE
+            }
+            order.customerState == CustomerState.NEARBY -> {
+                progressBar.progress = 50
+                eta.text = formatETA(order.etaAt)
+            }
             else -> {
-                if (!order.open()) {
-                    showOrderCompleted()
-                } else {
-                    when (order.customerState) {
-                        CustomerState.CREATED -> {
-                            progressBar.progress = 25
-                            eta.text = formatETA(order.etaAt)
-                            claimOrder(order)
-                        }
-                        CustomerState.EN_ROUTE -> {
-                            progressBar.progress = 33
-                            eta.text = formatETA(order.etaAt)
-                        }
-                        CustomerState.NEARBY -> {
-                            progressBar.progress = 50
-                            eta.text = formatETA(order.etaAt)
-                        }
-                        CustomerState.ARRIVED -> {
-                            progressBar.progress = 67
-                            textView.text = getString(R.string.youre_here)
-                            eta.text = order.site.instructions
-                        }
-                        CustomerState.WAITING -> {
-                            progressBar.progress = 75
-                            // Once a customer is waiting, hide the I'm here button and show I'm done
-                            textView.text = getString(R.string.youre_here)
-                            eta.text = order.site.instructions
-                            imDoneButton.visibility = View.VISIBLE
-                            imHereButton.visibility = View.INVISIBLE
-                        }
-                    }
-                }
+                // customer en route
+                progressBar.progress = 33
+                eta.text = formatETA(order.etaAt)
             }
         }
     }
