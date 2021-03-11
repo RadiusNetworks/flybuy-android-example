@@ -40,12 +40,11 @@ This example uses Google's Firebase push notifications.  You need to provide a `
      
 **Guest Journey**  
  1. Set up LiveData observers to receive updates for active order  
-    - OrderState changes to `completed` go to OrderComplete activity
     - OrderState changes to `cancelled` or `gone` go to MainActivity
-    - CustomerState changes to `en_route`, `nearby`, update progress bar and ETA  
+    - order.open() returns `false` go to OrderComplete activity
     - CustomerState changes to `arrived`, update the progress bar and display pickup instructions  
     - CustomerState changes to `waiting` update the progress bar and show `I'm done` button  
-    - CustomerState changes to `completed` go to OrderComplete activity  
+    - CustomerState changes to `en_route`, `nearby`, update progress bar and ETA  
  2. Claim active order if not already claimed  
  3. On click `I'm here`, set the CustomerState to `waiting`
  4. On click `I'm done`, set the CustomerState to `completed`
