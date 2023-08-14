@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
-import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_on_my_way.*
+
 
 class MainActivity : AppCompatActivity() {
     private var app: ExampleApplication? = null
@@ -29,8 +29,16 @@ class MainActivity : AppCompatActivity() {
                 fetchOrder(it)
             }
         } ?: run {
-            FlyBuyCore.orders.fetch()
+            // FlyBuyCore.orders.fetch { orders, sdkError ->
+            //    if (null != sdkError) {
+            //        // Handle error
+            //    } else {
+                    // Handle success
+            //    }
+            //}
+            //FlyBuyCore.orders.fetch()
             var activity: Class<AppCompatActivity> = OnMyWayActivity::class.java as Class<AppCompatActivity>
+            //var openOrders = FlyBuyCore.orders.openLiveData
             var openOrders = FlyBuyCore.orders.open
             // if this customer has open orders, choose the first one and return to the guest journey.
             if (openOrders.isNotEmpty()) {
@@ -53,14 +61,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updatePushToken() {
-        FirebaseInstanceId.getInstance().instanceId
+        FirebaseMessaging.getInstance().token
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.d("Listener", "getInstanceId failed")
                     return@OnCompleteListener
                 }
                 // Get new Instance ID token
-                task.result?.token?.let {
+                task.result?.let {
                     FlyBuyCore.onNewPushToken(it)
                 }
             })

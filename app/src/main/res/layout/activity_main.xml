@@ -28,9 +28,11 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textColor="@android:color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/redeem"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.567"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
