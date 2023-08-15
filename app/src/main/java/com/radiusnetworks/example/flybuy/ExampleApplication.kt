@@ -15,7 +15,7 @@ class ExampleApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val configOptions: ConfigOptions = ConfigOptions.Builder("APP_TOKEN_HERE")
+        val configOptions: ConfigOptions = ConfigOptions.Builder("93.9u8khUZpUzcxWLjF1QZnAyUt")
             .build()
         FlyBuyCore.configure(this, configOptions)
         PickupManager.getInstance().configure(this)
