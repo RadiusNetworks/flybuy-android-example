@@ -29,16 +29,8 @@ class MainActivity : AppCompatActivity() {
                 fetchOrder(it)
             }
         } ?: run {
-            // FlyBuyCore.orders.fetch { orders, sdkError ->
-            //    if (null != sdkError) {
-            //        // Handle error
-            //    } else {
-                    // Handle success
-            //    }
-            //}
             //FlyBuyCore.orders.fetch()
             var activity: Class<AppCompatActivity> = OnMyWayActivity::class.java as Class<AppCompatActivity>
-            //var openOrders = FlyBuyCore.orders.openLiveData
             var openOrders = FlyBuyCore.orders.open
             // if this customer has open orders, choose the first one and return to the guest journey.
             if (openOrders.isNotEmpty()) {

@@ -89,12 +89,12 @@ class OnMyWayActivity : AppCompatActivity() {
 
     fun onMyWayClick(v: View) {
         updateFlyBuyCustomer()
-        // if app doesn't have location permissions, ask for them
+        // if app doesn't have Notifications permissions, ask for them
         requestPostNotificationsPermissions(::notificationPermissionCallback)
-        //requestLocationPermissions(::locationPermissionCallback)
     }
 
     private fun notificationPermissionCallback(enabled: Boolean) {
+        // if app doesn't have Location permissions, ask for them
         requestLocationPermissions(::locationPermissionCallback)
     }
 
