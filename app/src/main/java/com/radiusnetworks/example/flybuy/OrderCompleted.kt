@@ -22,7 +22,7 @@ class OrderCompleted : AppCompatActivity() {
             FlyBuyCore.orders.rateOrder(
                 orderId = it.id,
                 rating = ratingBar.numStars,
-                comments = commentsText.toString()
+                comments = commentsText.text.toString()
             )
             startActivity(Intent(this, MainActivity::class.java))
         }

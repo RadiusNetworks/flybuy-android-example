@@ -1,23 +1,21 @@
 package com.radiusnetworks.example.flybuy
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import com.radiusnetworks.flybuy.sdk.data.order.OrderState
 import com.radiusnetworks.flybuy.sdk.data.room.domain.Order
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.room.domain.open
+import com.radiusnetworks.flybuy.sdk.manager.builder.OrderOptions
+import com.radiusnetworks.flybuy.sdk.util.hasFineLocationPermission
 import kotlinx.android.synthetic.main.activity_guest_journey.*
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -58,7 +56,7 @@ class GuestJourneyActivity : AppCompatActivity() {
             !(order.open()) -> {
                 showOrderCompleted()
             }
-            order?.customerId == null -> {
+            order.customerId == null -> {
                 progressBar.progress = 25
                 eta.text = formatETA(order.etaAt)
                 claimOrder(order)
@@ -105,7 +103,7 @@ class GuestJourneyActivity : AppCompatActivity() {
                 }
             }
         } ?: run {
-            if (checkLocationPermissions()) {
+            if (hasFineLocationPermission()) {
                 getString(R.string.calculating)
             } else {
                 getString(R.string.no_location)
@@ -113,39 +111,30 @@ class GuestJourneyActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLocationPermissions(): Boolean {
-        return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
-    }
-
     private fun claimOrder(order: Order) {
         FlyBuyCore.customer.current?.let { customer ->
-            val customerInfo = intent?.let {
-                CustomerInfo(
-                    name = it.getStringExtra("CustomerName") ?: "",
-                    phone = it.getStringExtra("CustomerPhone") ?: "",
-                    carType = it.getStringExtra("CustomerCarType") ?: "",
-                    carColor = it.getStringExtra("CustomerCarColor") ?: "",
-                    licensePlate = it.getStringExtra("CustomerLicensePlate") ?: ""
-                )
+            val orderOptions = intent?.let {
+                OrderOptions.Builder(customerName = it.getStringExtra("CustomerName") ?: "")
+                    .setCustomerPhone(it.getStringExtra("CustomerPhone") ?: "")
+                    .setCustomerCarColor(it.getStringExtra("CustomerCarColor") ?: "")
+                    .setCustomerCarType(it.getStringExtra("CustomerCarType") ?: "")
+                    .setCustomerCarPlate(it.getStringExtra("CustomerLicensePlate") ?: "")
+                    .build()
             } ?: run {
-                CustomerInfo(
-                    name = customer.name,
-                    phone = customer.phone,
-                    carType = customer.carType.toString(),
-                    carColor = customer.carColor.toString(),
-                    licensePlate = customer.licensePlate.toString()
-                )
+                OrderOptions.Builder(customerName = customer.name)
+                    .setCustomerPhone(customer.phone)
+                    .setCustomerCarColor(customer.carColor.toString())
+                    .setCustomerCarType(customer.carType.toString())
+                    .setCustomerCarPlate(customer.licensePlate.toString())
+                    .build()
             }
 
-            FlyBuyCore.orders.claim(order.redemptionCode.toString(), customerInfo) { _, sdkError ->
+            FlyBuyCore.orders.claim(order.redemptionCode.toString(), orderOptions) { _, sdkError ->
                 sdkError?.let {
                     app?.handleFlyBuyError(it)
                 } ?: run {
                     // if location permissions denied, send an EN_ROUTE update
-                    if (!checkLocationPermissions()) {
+                    if (!hasFineLocationPermission()) {
                         FlyBuyCore.orders.updateCustomerState(order.id, CustomerState.EN_ROUTE) { _, sdkError ->
                             sdkError?.let {
                                 app?.handleFlyBuyError(it)
@@ -158,7 +147,7 @@ class GuestJourneyActivity : AppCompatActivity() {
     }
 
     private fun showOrderCompleted() {
-        startActivity(Intent(this, OrderCompleted::class.java))
+        startActivity(Intent(this, OrderCompleted::class.java, ))
     }
 
     fun imHereClick(v: View) {

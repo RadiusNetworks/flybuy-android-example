@@ -57,7 +57,12 @@ class FlyBuyFirebaseService : FirebaseMessagingService() {
                         }
                     }
                 }
-                val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                val pendingIntent = PendingIntent.getActivity(this, 0, intent, flags)
                 val notif = NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setSmallIcon(R.drawable.ic_stat_default)
@@ -73,7 +78,7 @@ class FlyBuyFirebaseService : FirebaseMessagingService() {
                 notificationManager.notify(notification.tag, NOTIFICATION_ID, notif)
 
             }
-            FlyBuyCore.onMessageReceived(it.data, null)
+                FlyBuyCore.onMessageReceived(it.data, null)
         }
     }
 

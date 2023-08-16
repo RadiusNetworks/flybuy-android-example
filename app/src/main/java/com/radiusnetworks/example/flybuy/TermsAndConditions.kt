@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import kotlinx.android.synthetic.main.terms_and_conditions.*
@@ -41,7 +41,7 @@ class TermsAndConditions : AppCompatActivity() {
                 app?.handleFlyBuyError(it)
             } ?: run {
                 customer?.let {
-                    FirebaseInstanceId.getInstance().deleteInstanceId()
+                    FirebaseMessaging.getInstance().deleteToken()
                 }
             }
         }
