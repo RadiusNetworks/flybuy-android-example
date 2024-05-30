@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.radiusnetworks.example.flybuy.databinding.ActivityGuestJourneyBinding
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
 import com.radiusnetworks.flybuy.sdk.data.order.OrderState
 import com.radiusnetworks.flybuy.sdk.data.room.domain.Order
@@ -16,27 +17,30 @@ import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.room.domain.open
 import com.radiusnetworks.flybuy.sdk.manager.builder.OrderOptions
 import com.radiusnetworks.flybuy.sdk.util.hasFineLocationPermission
-import kotlinx.android.synthetic.main.activity_guest_journey.*
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.temporal.ChronoUnit
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class GuestJourneyActivity : AppCompatActivity() {
     private var app: ExampleApplication? = null
+    private lateinit var binding: ActivityGuestJourneyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_guest_journey)
+        binding = ActivityGuestJourneyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         app = application as ExampleApplication
         // Get merchant logo from FlyBuy
         val options: RequestOptions = RequestOptions()
             .centerInside()
         Glide.with(this).load(app?.activeOrder?.site?.iconUrl).apply(options)
-            .into(journey_logo_image)
-        val orderObserver = Observer<Order> {
+            .into(binding.journeyLogoImage)
+        val orderObserver = Observer<Order?> {
             orderProgress(it)
         }
-        val order: LiveData<Order> = app?.activeOrder?.let {
+        val order: LiveData<Order?> = app?.activeOrder?.let {
             FlyBuyCore.orders.getOrder(it.id)
         } ?: run {
             MutableLiveData<Order>()
@@ -48,40 +52,42 @@ class GuestJourneyActivity : AppCompatActivity() {
         }
     }
 
-    private fun orderProgress(order: Order) {
-        when {
-            order.state == OrderState.CANCELLED -> {
-                startActivity(Intent(this, MainActivity::class.java))
-            }
-            !(order.open()) -> {
-                showOrderCompleted()
-            }
-            order.customerId == null -> {
-                progressBar.progress = 25
-                eta.text = formatETA(order.etaAt)
-                claimOrder(order)
-            }
-            order.customerState == CustomerState.ARRIVED -> {
-                progressBar.progress = 67
-                textView.text = getString(R.string.youre_here)
-                eta.text = order.site.instructions
-            }
-            order.customerState == CustomerState.WAITING -> {
-                progressBar.progress = 75
-                // Once a customer is waiting, hide the I'm here button and show I'm done
-                textView.text = getString(R.string.youre_here)
-                eta.text = order.site.instructions
-                imDoneButton.visibility = View.VISIBLE
-                imHereButton.visibility = View.INVISIBLE
-            }
-            order.customerState == CustomerState.NEARBY -> {
-                progressBar.progress = 50
-                eta.text = formatETA(order.etaAt)
-            }
-            else -> {
-                // customer en route
-                progressBar.progress = 33
-                eta.text = formatETA(order.etaAt)
+    private fun orderProgress(order: Order?) {
+        order?.let {
+            when {
+                order.state == OrderState.CANCELLED -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+                !(order.open()) -> {
+                    showOrderCompleted()
+                }
+                order.customerId == null -> {
+                    binding.progressBar.progress = 25
+                    binding.eta.text = formatETA(order.etaAt)
+                    claimOrder(order)
+                }
+                order.customerState == CustomerState.ARRIVED -> {
+                    binding.progressBar.progress = 67
+                    binding.textView.text = getString(R.string.youre_here)
+                    binding.eta.text = order.site.instructions
+                }
+                order.customerState == CustomerState.WAITING -> {
+                    binding.progressBar.progress = 75
+                    // Once a customer is waiting, hide the I'm here button and show I'm done
+                    binding.textView.text = getString(R.string.youre_here)
+                    binding.eta.text = order.site.instructions
+                    binding.imDoneButton.visibility = View.VISIBLE
+                    binding.imHereButton.visibility = View.INVISIBLE
+                }
+                order.customerState == CustomerState.NEARBY -> {
+                    binding.progressBar.progress = 50
+                    binding.eta.text = formatETA(order.etaAt)
+                }
+                else -> {
+                    // customer en route
+                    binding.progressBar.progress = 33
+                    binding.eta.text = formatETA(order.etaAt)
+                }
             }
         }
     }
@@ -91,8 +97,8 @@ class GuestJourneyActivity : AppCompatActivity() {
             val now = Instant.now()
             val etaSeconds = ChronoUnit.SECONDS.between(now, it)
             val etaMinutes = etaSeconds / 60
-            val localDateTime = org.threeten.bp.LocalDateTime.ofInstant(it, ZoneId.systemDefault())
-            val etaTimeFormatter = org.threeten.bp.format.DateTimeFormatter.ofPattern(getString(R.string.eta_format))
+            val localDateTime = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
+            val etaTimeFormatter = DateTimeFormatter.ofPattern(getString(R.string.eta_format))
             val etaText = localDateTime.format(etaTimeFormatter)
             when {
                 etaSeconds < 0 -> getString(R.string.overdue, etaText)
@@ -158,7 +164,7 @@ class GuestJourneyActivity : AppCompatActivity() {
                 } ?: run {
                     app?.activeOrder = order
                     runOnUiThread {
-                        imDoneButton.visibility = View.VISIBLE
+                        binding.imDoneButton.visibility = View.VISIBLE
                         v.visibility = View.INVISIBLE
                     }
                 }

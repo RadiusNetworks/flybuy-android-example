@@ -7,21 +7,23 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.messaging.FirebaseMessaging
+import com.radiusnetworks.example.flybuy.databinding.TermsAndConditionsBinding
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
-import kotlinx.android.synthetic.main.terms_and_conditions.*
 
 class TermsAndConditions : AppCompatActivity() {
     private var app: ExampleApplication? = null
+    private lateinit var binding: TermsAndConditionsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.terms_and_conditions)
+        binding = TermsAndConditionsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         app = application as ExampleApplication
         val options: RequestOptions = RequestOptions()
             .centerInside()
         Glide.with(this).load(app?.activeOrder?.site?.iconUrl).apply(options)
-            .into(logo_image_location)
+            .into(binding.logoImageLocation)
     }
 
     private fun createFlyBuyCustomer() {
@@ -53,7 +55,7 @@ class TermsAndConditions : AppCompatActivity() {
     }
 
     fun onCheck(v: View) {
-        button_ok.isEnabled = age_check.isChecked and toc_check.isChecked
+        binding.buttonOk.isEnabled = binding.ageCheck.isChecked and binding.tocCheck.isChecked
     }
 
 }

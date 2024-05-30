@@ -8,19 +8,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
+import com.radiusnetworks.example.flybuy.databinding.ActivityMainBinding
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerState
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_on_my_way.*
-
 
 class MainActivity : AppCompatActivity() {
     private var app: ExampleApplication? = null
+    private lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         app = application as ExampleApplication
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         FirebaseApp.initializeApp(this)
         updatePushToken()
         // if opening a deep link
@@ -46,8 +47,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, activity))
             } else {
                 // if no link and no active orders, show the redeem order button
-                redeem.visibility = View.VISIBLE
-                redemption_code.visibility = View.VISIBLE
+                binding.redeem.visibility = View.VISIBLE
+                binding.redemptionCode.visibility = View.VISIBLE
             }
         }
     }
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun redeemOrderClick(v: View?) {
-        fetchOrder(redemption_code.text.toString())
+        fetchOrder(binding.redemptionCode.text.toString())
     }
 
 }
