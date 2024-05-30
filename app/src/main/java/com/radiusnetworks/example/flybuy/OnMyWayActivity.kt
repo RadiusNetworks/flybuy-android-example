@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.radiusnetworks.example.flybuy.databinding.ActivityOnMyWayBinding
 import com.radiusnetworks.flybuy.sdk.FlyBuyCore
 import com.radiusnetworks.flybuy.sdk.data.customer.CustomerInfo
 import com.radiusnetworks.flybuy.sdk.pickup.PickupManager
@@ -14,15 +15,18 @@ import com.radiusnetworks.flybuy.sdk.util.fineLocationPermissions
 import com.radiusnetworks.flybuy.sdk.util.hasFineLocationPermission
 import com.radiusnetworks.flybuy.sdk.util.hasPostNotificationsPermissions
 import com.radiusnetworks.flybuy.sdk.util.postNotificationsPermission
-import kotlinx.android.synthetic.main.activity_on_my_way.*
-import org.threeten.bp.ZoneId
+import java.time.ZoneId
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class OnMyWayActivity : AppCompatActivity() {
     private var app: ExampleApplication? = null
+    private lateinit var binding: ActivityOnMyWayBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_on_my_way)
+        binding = ActivityOnMyWayBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         app = application as ExampleApplication
         displayFlyBuyCustomer()
         displayFlyBuyOrder()
@@ -38,52 +42,52 @@ class OnMyWayActivity : AppCompatActivity() {
 
     private fun readFlyBuyCustomer(): CustomerInfo {
         return CustomerInfo(
-            name = customer_name.text.toString(),
-            carType = customer_vehicle_type.text.toString(),
-            carColor = customer_vehicle_color.text.toString(),
-            licensePlate = customer_license_plate.text.toString()
+            name = binding.customerName.text.toString(),
+            carType = binding.customerVehicleType.text.toString(),
+            carColor = binding.customerVehicleColor.text.toString(),
+            licensePlate = binding.customerLicensePlate.text.toString()
         )
     }
 
     private fun displayFlyBuyCustomer() {
         FlyBuyCore.customer.current?.let {
             runOnUiThread {
-                customer_name.setText(it.name)
-                customer_phone.setText(it.phone)
-                customer_vehicle_type.setText(it.carType)
-                customer_vehicle_color.setText(it.carColor)
-                customer_license_plate.setText(it.licensePlate)
+                binding.customerName.setText(it.name)
+                binding.customerPhone.setText(it.phone)
+                binding.customerVehicleType.setText(it.carType)
+                binding.customerVehicleColor.setText(it.carColor)
+                binding.customerLicensePlate.setText(it.licensePlate)
             }
         }
     }
 
     private fun displayFlyBuyOrder() {
         val pickupTime = app?.activeOrder?.pickupWindow?.start?.let {
-            val localDateTime = org.threeten.bp.LocalDateTime.ofInstant(it, ZoneId.systemDefault())
-            val timeFormatter = org.threeten.bp.format.DateTimeFormatter.ofPattern(getString(R.string.eta_format))
+            val localDateTime = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
+            val timeFormatter = DateTimeFormatter.ofPattern(getString(R.string.eta_format))
             localDateTime.format(timeFormatter)
         } ?: run {
             getString(R.string.asap)
         }
 
         runOnUiThread {
-            site_name.text = app?.activeOrder?.site?.name
-            site_address.text = app?.activeOrder?.site?.fullAddress
-            pickup_time.text = pickupTime
+            binding.siteName.text = app?.activeOrder?.site?.name
+            binding.siteAddress.text = app?.activeOrder?.site?.fullAddress
+            binding.pickupTime.text = pickupTime
             val options: RequestOptions = RequestOptions()
                 .centerInside()
             Glide.with(this).load(app?.activeOrder?.site?.iconUrl).apply(options)
-                .into(journey_logo_image)
+                .into(binding.journeyLogoImage)
         }
     }
 
     private fun startGuestJourney() {
         val intent = Intent(this, GuestJourneyActivity::class.java)
-        intent.putExtra("CustomerName", customer_name.text.toString())
-        intent.putExtra("CustomerPhone", customer_phone.text.toString())
-        intent.putExtra("CustomerCarType", customer_vehicle_type.text.toString())
-        intent.putExtra("CustomerCarColor", customer_vehicle_color.text.toString())
-        intent.putExtra("CustomerLicensePlate", customer_license_plate.text.toString())
+        intent.putExtra("CustomerName", binding.customerName.text.toString())
+        intent.putExtra("CustomerPhone", binding.customerPhone.text.toString())
+        intent.putExtra("CustomerCarType", binding.customerVehicleType.text.toString())
+        intent.putExtra("CustomerCarColor", binding.customerVehicleColor.text.toString())
+        intent.putExtra("CustomerLicensePlate", binding.customerLicensePlate.text.toString())
         startActivity(intent)
     }
 
