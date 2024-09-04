@@ -52,4 +52,7 @@
     <string name="completed_how_was_experience">How was your pickup experience?</string>
     <string name="completed_comments">Comments</string>
     <string name="completed_feedback">Send Feedback</string>
+    <string name="title_activity_mapbox_autofill">MapboxAutofill</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

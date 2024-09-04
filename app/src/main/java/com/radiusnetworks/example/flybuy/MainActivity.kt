@@ -89,4 +89,7 @@ class MainActivity : AppCompatActivity() {
         fetchOrder(binding.redemptionCode.text.toString())
     }
 
+    fun locationLookupClick(v: View) {
+        startActivity(Intent(this, NearbySites::class.java))
+    }
 }
