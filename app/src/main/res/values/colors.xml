@@ -4,4 +4,12 @@
     <color name="colorPrimaryDark">#02174f</color>
     <color name="colorAccent">#3ac0da</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+
+    <color name="windowBackground">#6E8BF7</color>
+    <color name="white">#FFFFFF</color>
 </resources>

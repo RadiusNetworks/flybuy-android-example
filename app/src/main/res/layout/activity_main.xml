@@ -45,4 +45,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/flybuy" />
 
+    <Button
+        android:id="@+id/locationLookup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="locationLookupClick"
+        android:text="Nearby Sites"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

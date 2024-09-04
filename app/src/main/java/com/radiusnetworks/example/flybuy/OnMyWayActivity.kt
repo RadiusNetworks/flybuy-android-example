@@ -113,7 +113,7 @@ class OnMyWayActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { results ->
-            PickupManager.getInstance().onPermissionChanged()
+            //PickupManager.getInstance().onPermissionChanged()
             postNotificationsPermissionChangeCallback?.invoke(results.all { it.value })
         }
 
